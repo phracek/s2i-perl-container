@@ -91,6 +91,7 @@ check_result() {
   if [[ "$result" != "0" ]]; then
     TESTSUITE_RESULT=1
   fi
+  return $result
 }
 
 wait_for_cid() {
@@ -203,10 +204,10 @@ test_application() {
   wait_for_cid
 
   test_scl_usage "perl --version" "v5.26."
-  check_result $?
+  check_result $? || return 1
 
   test_connection
-  check_result $?
+  check_result $? || return 1
   cleanup_test_app
 }
 
@@ -239,7 +240,7 @@ do_test() {
 
     # Perform user-supplied test function
     $test_function;
-    check_result $?
+    check_result $? || return 1
 
     # Terminate the test application and clean up
     cleanup_test_app
@@ -265,15 +266,15 @@ test_sample_test_app() {
 
     prepare
     run_s2i_build $s2i_args
-    check_result $?
+    check_result $? || return 1
 
     # Verify the 'usage' script is working properly when running the base image with 's2i usage ...'
     test_s2i_usage
-    check_result $?
+    check_result $? || return 1
 
     # Verify the 'usage' script is working properly when running the base image with 'docker run ...'
     test_docker_run_usage
-    check_result $?
+    check_result $? || return 1
 
     # Test application with default UID
     test_application
@@ -347,10 +348,10 @@ test_npm() {
 
     prepare
     run_s2i_build $s2i_args
-    check_result $?
+    check_result $? || return 1
 
     ct_npm_works
-    check_result $?
+    check_result $? || return 1
 
     cleanup
 }
