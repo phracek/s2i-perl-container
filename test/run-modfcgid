@@ -9,8 +9,8 @@
 IMAGE_NAME=${IMAGE_NAME-centos/perl-530-centos7-candidate}
 
 # TODO: Make command compatible for Mac users
-test_dir="$(readlink -zf $(dirname "${BASH_SOURCE[0]}"))"
-image_dir=$(readlink -zf ${test_dir}/..)
+test_dir="$(readlink -f $(dirname "${BASH_SOURCE[0]}"))"
+image_dir=$(readlink -f ${test_dir}/..)
 test_short_summary=''
 TESTSUITE_RESULT=0
 TEST_LIST="\
@@ -22,6 +22,7 @@ test_warningonstderr
 test_fcgi
 test_npm
 "
+
 
 source "${test_dir}/test-lib.sh"
 
@@ -88,6 +89,7 @@ cleanup() {
 
 check_result() {
   local result="$1"
+  echo "RESULT: $result"
   if [[ "$result" != "0" ]]; then
     TESTCASE_RESULT=1
   fi
@@ -207,6 +209,8 @@ test_application() {
 
   if [ x"$VERSION" == "x5.30-mod_fcgid" ]; then
     version="5.30"
+  elif [ x"$VERSION" == "x5.32" ]; then
+    version="5.32"
   fi
   test_scl_usage "perl --version" "v${version}."
   check_result $?
