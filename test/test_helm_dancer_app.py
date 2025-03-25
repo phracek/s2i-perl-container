@@ -49,6 +49,8 @@ class TestHelmPerlDancerAppTemplate:
     def test_dancer_application_curl_output(self):
         if self.hc_api.oc_api.shared_cluster:
             pytest.skip("Do NOT test on shared cluster")
+        if OS == "rhel10":
+            pytest.skip("Do NOT test on RHEL10 yet.")
         self.hc_api.package_name = "redhat-perl-imagestreams"
         assert self.hc_api.helm_package()
         assert self.hc_api.helm_installation()
@@ -67,6 +69,8 @@ class TestHelmPerlDancerAppTemplate:
         )
 
     def test_dancer_application_helm_test(self):
+        if OS == "rhel10":
+            pytest.skip("Do NOT test on RHEL10 yet.")
         self.hc_api.package_name = "redhat-perl-imagestreams"
         assert self.hc_api.helm_package()
         assert self.hc_api.helm_installation()
